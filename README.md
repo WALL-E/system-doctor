@@ -1,2 +1,15 @@
-# system-doctor
-system-doctor
+# System Doctor
+
+![ERC20合约事件 - visual selection (1)](https://github.com/user-attachments/assets/5c8724ab-37cd-4dfe-9616-d283b0768e3d)
+
+
+## 代码亮点
+
+- 架构设计：本地检测 + 云端分析的混合架构
+- AI集成：利用大模型理解复杂系统问题
+- 自动化：从检测到报告生成的全自动流程
+- 兼容性：自适应解析不同系统工具的输出
+- 可扩展：函数映射机制易于添加新检测功能
+- 用户友好：终端输出格式化和报告保存
+
+该工具特别适合运维人员快速诊断Linux服务器性能问题，结合了系统工具的高效性和AI的分析能力，大幅提升故障排查效率。
