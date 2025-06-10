@@ -12,9 +12,9 @@ import requests
 API_URL = "https://api.siliconflow.cn/v1/chat/completions"
 API_KEY = os.getenv("API_KEY", "your_api_key_here")  # SiliconFlow API Key
 # MODEL_NAME = "Qwen/Qwen3-30B-A3B"
-MODEL_NAME = "Qwen/Qwen3-32B"
+# MODEL_NAME = "Qwen/Qwen3-32B"
 # MODEL_NAME = "Qwen/Qwen2.5-72B-Instruct"
-# MODEL_NAME = "deepseek-ai/DeepSeek-R1"
+MODEL_NAME = "deepseek-ai/DeepSeek-R1"
 # MODEL_NAME = "Pro/deepseek-ai/DeepSeek-V3"
 # MODEL_NAME = "Pro/deepseek-ai/DeepSeek-R1"
 
