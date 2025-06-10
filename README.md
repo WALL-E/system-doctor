@@ -1,15 +1,16 @@
 # System Doctor
 
-![ERC20合约事件 - visual selection (1)](https://github.com/user-attachments/assets/5c8724ab-37cd-4dfe-9616-d283b0768e3d)
+## Overview
 
+System Doctor is an automation tool designed to help operations and maintenance engineers quickly diagnose performance issues on Linux servers. By integrating traditional system utilities with AI-powered analysis, System Doctor streamlines the troubleshooting process and significantly improves efficiency.
 
-## 代码亮点
+## Key Features
 
-- 架构设计：本地检测 + 云端分析的混合架构
-- AI集成：利用大模型理解复杂系统问题
-- 自动化：从检测到报告生成的全自动流程
-- 兼容性：自适应解析不同系统工具的输出
-- 可扩展：函数映射机制易于添加新检测功能
-- 用户友好：终端输出格式化和报告保存
+- **Hybrid Architecture**: Combines local diagnostics with cloud-based analysis for comprehensive insights.
+- **AI Integration**: Leverages advanced models to understand and interpret complex system problems.
+- **Automation**: Fully automated workflow from data collection to report generation.
+- **Compatibility**: Adaptively parses outputs from a variety of system tools.
+- **Extensibility**: Function mapping mechanism makes it easy to add new diagnostic features.
+- **User-Friendly**: Formatted terminal outputs and report storage for easy review.
 
-该工具特别适合运维人员快速诊断Linux服务器性能问题，结合了系统工具的高效性和AI的分析能力，大幅提升故障排查效率。
+System Doctor is especially suitable for DevOps and sysadmins who need a fast, intelligent, and extensible solution for Linux server health checks and troubleshooting.
