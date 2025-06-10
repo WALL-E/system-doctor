@@ -1,7 +1,7 @@
 # Linux Performance Analysis Report
 
-Time: 2025-06-10 05:49:53.689470
-Author: deepseek-ai/DeepSeek-R1
+- Time: 2025-06-10 05:49:53.689470
+- Author: deepseek-ai/DeepSeek-R1
 
 Based on the analysis of your Linux server metrics, here's a summary of the findings and recommendations:
 
@@ -54,7 +54,7 @@ Based on the analysis of your Linux server metrics, here's a summary of the find
    - Verify config: Resource limits (`solana-validator --help`)
 
 2. **Optimize Solana Validator**:  
-   bash
+   ```bash
    # Adjust GPU parameters (if used) 
    solana-validator --limit-ledger-size 50000000 \ 
                     --dynamic-port-range 8000-8020  
@@ -62,19 +62,19 @@ Based on the analysis of your Linux server metrics, here's a summary of the find
    systemd-run --slice=validator.slice \ 
               --property=MemoryMax=220G \ 
               agave-validator [ARGS]
-   
+   ```
 
 3. **Monitor Process Hierarchy**:  
-   bash 
+   ```bash 
    top -H -p 9850  # Inspect child threads
    pmap 9850       # Analyze memory segments
-   
+   ```
 
 4. **Check Network Bottlenecks** (not measured):  
-   bash
+   ```bash
    nethogs           # Per-process bandwidth
    ethtool eth0      # Check link speed/drops
-   
+   ```
 
 **Long-Term**:  
 - Deploy monitoring (Prometheus + Node Exporter)  
