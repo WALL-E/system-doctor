@@ -582,7 +582,7 @@ def analyze_performance():
         },
         {
             "role": "user",
-            "content": "My Linux server is responding very slowly. Please help me analyze the performance issue."
+            "content": "My Linux server is responding very slowly. Please help me analyze the performance issue. The report output format is Markdown."
         }
     ]
     
