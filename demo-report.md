@@ -22,23 +22,26 @@
 
 ### Resource Utilization
 #### CPU Usage
-mermaid
+
+```mermaid
 pie showData
     title CPU Usage (10-sec avg)
     "User" : 10.13
     "System" : 6.36
     "Idle" : 83.31
+```
 
 - **Load Average (1-min)**: 20.94
 - **Thread Utilization**: 128 threads, 20.94 load → **No CPU saturation** (load < thread count)
 
 #### Memory Utilization
-mermaid
+```mermaid
 pie showData
     title Memory Usage (755 GB Total)
     "Used" : 239
     "Free" : 136
     "Buffers/Cache" : 380
+```
 
 - **RAM Usage**: 244 GB/755 GB (32.3% usage)
 - **Swap Usage**: 0 MB → **No memory pressure**
@@ -84,14 +87,14 @@ Key observations:
    - Though no swap usage, warrants monitoring
 
 #### Recommendations
-mermaid
+```mermaid
 flowchart LR
     A[Server Slowness] --> B[Check agave-validator]
     B --> C1[Thread configuration?]
     B --> C2[Resource limits?]
     A --> D[Monitor jito-shredstrea]
     A --> E[Verify memory fragmentation]
-
+```
 
 **Action Steps**:
 1. 🔍 **Investigate `agave-validator`:**
