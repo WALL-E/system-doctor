@@ -1,5 +1,7 @@
 # System Doctor
 
+Large model providers currently only support siliconflow
+
 ## Overview
 
 System Doctor is an automation tool designed to help operations and maintenance engineers quickly diagnose performance issues on Linux servers. By integrating traditional system utilities with AI-powered analysis, System Doctor streamlines the troubleshooting process and significantly improves efficiency.
