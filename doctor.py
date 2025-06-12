@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import re
 import json
 import time
 import subprocess
@@ -75,8 +76,129 @@ my_tool_calls = [
         "name": "check_running_processes",
         "arguments": " {\"top_n\": 5}"
     }
+    },
+    {
+    "index": 6,
+    "id": "019754ff2926f98aa40602a84183ee01",
+    "type": "function",
+    "function": {
+        "name": "check_network_info",
+        "arguments": " {}"
     }
+    },
+
 ]
+
+
+def parse_ss_s(ss_output: str):
+    """
+    分析 'ss -s' 命令的输出字符串。
+
+    Args:
+        ss_output: 'ss -s' 命令产生的字符串输出。
+
+    Returns:
+        一个字典，表示分析结果。
+        - 成功: {"status": "success", "data": {...}}
+        - 失败: {"status": "error", "message": "..."}
+    """
+    try:
+        ss_data = {
+            "Total": 0,
+            "TCP_summary": {
+                "total": 0,
+                "states": {}
+            },
+            "Transport": {}
+        }
+        lines = ss_output.strip().split('\n')
+        
+        parsing_transport_table = False
+        transport_headers = []
+
+        for line in lines:
+            if not line.strip():
+                continue
+
+            if line.startswith("Total:"):
+                ss_data["Total"] = int(line.split(':')[1].strip())
+                continue
+
+            if line.startswith("TCP:"):
+                match = re.match(r"TCP:\s+(\d+)\s+\((.*)\)", line)
+                if match:
+                    ss_data["TCP_summary"]["total"] = int(match.group(1))
+                    states_str = match.group(2)
+                    state_pairs = states_str.split(',')
+                    for pair in state_pairs:
+                        key, value = pair.strip().split()
+                        ss_data["TCP_summary"]["states"][key] = int(value)
+                else:
+                    ss_data["TCP_summary"]["total"] = int(line.split(':')[1].split('(')[0].strip())
+                continue
+            
+            if line.startswith("Transport"):
+                parsing_transport_table = True
+                transport_headers = line.split()[1:] 
+                continue
+
+            if parsing_transport_table:
+                parts = line.strip().split()
+                if not parts: continue # 再次跳过空行
+                protocol_name = parts[0]
+                values = [int(v) for v in parts[1:]]
+                ss_data["Transport"][protocol_name] = dict(zip(transport_headers, values))
+
+        # 校验是否解析到了关键数据，防止输入为空或完全不相关的内容
+        if not ss_data["Total"] and not ss_data["Transport"]:
+            raise ValueError("Input does not contain valid 'ss -s' data.")
+
+        return {"status": "success", "data": ss_data}
+
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+def check_network_info():
+    """
+    执行 'ss -s' 命令并调用分析函数。
+    
+    Returns:
+        一个字典，包含从 'ss -s' 命令分析得出的网络信息，或在执行失败时返回错误信息。
+    """
+    try:
+        # 定义要执行的命令
+        command = ["ss", "-s"]
+        
+        # 执行命令。
+        # - capture_output=True: 捕获标准输出和标准错误。
+        # - text=True: 将输出解码为文本。
+        # - check=True: 如果命令返回非零退出码（即失败），则引发 CalledProcessError。
+        result = subprocess.run(
+            command, 
+            capture_output=True, 
+            text=True, 
+            check=True
+        )
+        
+        # 将命令的标准输出传递给分析函数
+        return parse_ss_s(result.stdout)
+
+    except FileNotFoundError:
+        # 如果系统中没有'ss'命令，会触发此异常
+        return {
+            "status": "error", 
+            "message": "Command 'ss' not found. Please ensure it is installed and in the system's PATH."
+        }
+    except subprocess.CalledProcessError as e:
+        # 如果 'ss -s' 命令执行失败（例如，权限不足），会触发此异常
+        return {
+            "status": "error", 
+            "message": f"Command 'ss -s' failed with error: {e.stderr.strip()}"
+        }
+    except Exception as e:
+        # 捕获其他任何意外错误
+        return {"status": "error", "message": f"An unexpected error occurred: {str(e)}"}
+
 
 # Check CPU hardware information
 def check_cpu_info():
@@ -423,6 +545,7 @@ FUNCTION_MAP = {
     "check_running_processes": check_running_processes,
     "check_hostnamectl_info": check_hostnamectl_info,
     "check_cpu_info": check_cpu_info,
+    "check_network_info": check_network_info,
 }
 
 # Function definitions - for API calls
@@ -504,6 +627,16 @@ TOOLS_DEFINITION = [
             }
         }
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "check_network_info",
+            "description": "Check socket usage summary",
+            "parameters": {
+            }
+        }
+    },
+
 ]
 
 def call_siliconflow_api(messages, tools=None, tool_choice="auto"):
@@ -525,7 +658,7 @@ def call_siliconflow_api(messages, tools=None, tool_choice="auto"):
             API_URL,
             headers=headers,
             data=json.dumps(payload),
-            timeout=300
+            timeout=600
         )
         response.raise_for_status()
         return response.json()
